@@ -4,24 +4,28 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "usuarios")
-public class Usuario {
-    
+@Table(name = "artistas")
+public class Artista {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Column(nullable = false, unique = true)
-    private String username;
 
-    @OneToMany(mappedBy = "organizador", cascade = CascadeType.ALL)
+    @Column(nullable = false)
+    private String nome;
+
+    private String estiloMusical;
+
+    @OneToMany(mappedBy = "artista", cascade = CascadeType.ALL)
     private List<Evento> eventos;
 
     // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+    public String getEstiloMusical() { return estiloMusical; }
+    public void setEstiloMusical(String estiloMusical) { this.estiloMusical = estiloMusical; }
     public List<Evento> getEventos() { return eventos; }
     public void setEventos(List<Evento> eventos) { this.eventos = eventos; }
 }
