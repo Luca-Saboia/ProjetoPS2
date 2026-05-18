@@ -3,8 +3,10 @@ package br.mackenzie.projetops2.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
-@Table(name = "log_previsoes")
+@Table(name = "logs_previsao")
 public class LogPrevisao {
 
     @Id
@@ -12,19 +14,27 @@ public class LogPrevisao {
     private Long id;
 
     private Double temperatura;
-    private String descricaoClima; // Ex: "Chuva", "Ensolarado"
+    private String condicaoClimatica;
     private Integer umidade;
     private LocalDateTime dataConsulta;
 
-    // Getters e Setters
+    @ManyToOne
+    @JoinColumn(name = "evento_id", nullable = false)
+    @JsonIgnore
+    private Evento evento;
+
+    public LogPrevisao() {}
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public Double getTemperatura() { return temperatura; }
     public void setTemperatura(Double temperatura) { this.temperatura = temperatura; }
-    public String getDescricaoClima() { return descricaoClima; }
-    public void setDescricaoClima(String descricaoClima) { this.descricaoClima = descricaoClima; }
+    public String getCondicaoClimatica() { return condicaoClimatica; }
+    public void setCondicaoClimatica(String condicaoClimatica) { this.condicaoClimatica = condicaoClimatica; }
     public Integer getUmidade() { return umidade; }
     public void setUmidade(Integer umidade) { this.umidade = umidade; }
     public LocalDateTime getDataConsulta() { return dataConsulta; }
     public void setDataConsulta(LocalDateTime dataConsulta) { this.dataConsulta = dataConsulta; }
+    public Evento getEvento() { return evento; }
+    public void setEvento(Evento evento) { this.evento = evento; }
 }

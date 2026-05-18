@@ -1,27 +1,27 @@
 package br.mackenzie.projetops2.model;
 
 import jakarta.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
+    @Column(nullable = false)
+    private String nome;
+
     @Column(nullable = false, unique = true)
-    private String username;
+    private String email;
 
-    @OneToMany(mappedBy = "organizador", cascade = CascadeType.ALL)
-    private List<Evento> eventos;
+    public Usuario() {}
 
-    // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
-    public List<Evento> getEventos() { return eventos; }
-    public void setEventos(List<Evento> eventos) { this.eventos = eventos; }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 }

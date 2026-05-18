@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Catálogo de Eventos</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        /* Estilos embutidos de segurança caso o arquivo CSS demore a carregar no Codespaces */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            width: 100%;
+            max-width: 1100px;
+        }
+        .header h1 {
+            color: #1e293b;
+            margin: 0 0 5px 0;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .header p {
+            color: #64748b;
+            margin: 0 0 25px 0;
+            font-size: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th {
+            background-color: #0f172a;
+            color: #ffffff;
+            text-align: left;
+            padding: 14px 16px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+            font-size: 15px;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .weather-badge {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-block;
+        }
+        .artist-badge {
+            background-color: #f1f5f9;
+            color: #475569;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .text-muted {
+            color: #94a3b8;
+            font-style: italic;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>🗓️ Catálogo de Eventos</h1>
+            <p>Planeamento inteligente integrado com a previsão do tempo</p>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Evento</th>
+                    <th>Artista Principal</th>
+                    <th>Data e Hora</th>
+                    <th>Localização</th>
+                    <th>Previsão do Clima</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="evento : ${eventos}">
+                    
+                    <td th:text="${evento.nome}">Nome do Show</td>
+                    
+                    <td>
+                        <span class="artist-badge" 
+                              th:each="artista : ${evento.artistas}" 
+                              th:text="${artista.nomeArtistico}">
+                              Artista
+                        </span>
+                        <span th:if="${#lists.isEmpty(evento.artistas)}" class="text-muted">Sem artista</span>
+                    </td>
+                    
+                    <td th:text="${#temporals.format(evento.dataHora, 'dd/MM/yyyy HH:mm')}">20/11/2026 21:00</td>
+                    
+                    <td th:text="${evento.localizacao.city} + ' - ' + ${evento.localizacao.estado}">São Paulo - SP</td>
+                    
+                    <td>
+                        <div th:each="log : ${evento.logsPrevisao}">
+                            <span class="weather-badge" th:text="${log.temperatura} + '°C'">20°C</span>
+                            <small class="text-muted" th:text="'(' + ${log.condicaoClimatica} + ')'">(Ensolarado)</small>
+                        </div>
+                        <span th:if="${#lists.isEmpty(evento.logsPrevisao)}" class="text-muted">Sem dados</span>
+                    </td>
+                    
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

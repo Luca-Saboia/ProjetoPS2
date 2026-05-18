@@ -1,7 +1,9 @@
 package br.mackenzie.projetops2.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "eventos")
@@ -12,44 +14,82 @@ public class Evento {
     private Long id;
 
     @Column(nullable = false)
-    private LocalDate dataEvento;
+    private String nome;
 
     @Column(nullable = false)
-    private Double preco;
+    private LocalDateTime dataHora;
 
-    private String status; // Ex: "Agendado", "Alerta de Chuva", "Confirmado"
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "localizacao_id")
+    private Localizacao localizacao;
 
-    @ManyToOne
-    @JoinColumn(name = "usuario_id")
-    private Usuario organizador;
+    // Relacionamento ManyToMany mapeado em português para alinhar com o banco e o HTML
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "evento_artista",
+        joinColumns = @JoinColumn(name = "evento_id"),
+        inverseJoinColumns = @JoinColumn(name = "artista_id")
+    )
+    private List<Artista> artistas = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "artista_id")
-    private Artista actor;
+    @OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LogPrevisao> logsPrevisao = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "endereco_id")
-    private Endereco endereco;
+    // Construtores
+    public Evento() {}
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "log_previsao_id")
-    private LogPrevisao previsaoDoTempo;
+    public Evento(String nome, LocalDateTime dataHora, Localizacao localizacao) {
+        this.nome = nome;
+        this.dataHora = dataHora;
+        this.localizacao = localizacao;
+    }
 
     // Getters e Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public LocalDate getDataEvento() { return dataEvento; }
-    public void setDataEvento(LocalDate dataEvento) { this.dataEvento = dataEvento; }
-    public Double getPreco() { return preco; }
-    public void setPreco(Double preco) { this.preco = preco; }
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-    public Usuario getOrganizador() { return organizador; }
-    public void setOrganizador(Usuario organizador) { this.organizador = organizador; }
-    public Artista getArtista() { return actor; }
-    public void setArtista(Artista artista) { this.actor = artista; }
-    public Endereco getEndereco() { return endereco; }
-    public void setEndereco(Endereco endereco) { this.endereco = endereco; }
-    public LogPrevisao getPrevisaoDoTempo() { return previsaoDoTempo; }
-    public void setPrevisaoDoTempo(LogPrevisao previsaoDoTempo) { this.previsaoDoTempo = previsaoDoTempo; }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public LocalDateTime getDataHora() {
+        return dataHora;
+    }
+
+    public void setDataHora(LocalDateTime dataHora) {
+        this.dataHora = dataHora;
+    }
+
+    public Localizacao getLocalizacao() {
+        return localizacao;
+    }
+
+    public void setLocalizacao(Localizacao localizacao) {
+        this.localizacao = localizacao;
+    }
+
+    public List<Artista> getArtistas() {
+        return artistas;
+    }
+
+    public void setArtistas(List<Artista> artistas) {
+        this.artistas = artistas;
+    }
+
+    public List<LogPrevisao> getLogsPrevisao() {
+        return logsPrevisao;
+    }
+
+    public void setLogsPrevisao(List<LogPrevisao> logsPrevisao) {
+        this.logsPrevisao = logsPrevisao;
+    }
 }

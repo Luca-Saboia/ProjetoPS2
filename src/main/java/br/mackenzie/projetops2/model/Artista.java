@@ -1,6 +1,8 @@
 package br.mackenzie.projetops2.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,20 +14,54 @@ public class Artista {
     private Long id;
 
     @Column(nullable = false)
-    private String nome;
+    private String nomeArtistico;
 
-    private String estiloMusical;
+    @Column(nullable = false)
+    private String generoMusical;
 
-    @OneToMany(mappedBy = "artista", cascade = CascadeType.ALL)
-    private List<Evento> eventos;
+    // @JsonIgnore crucial aqui para evitar o loop infinito de JSON que vimos antes!
+    @JsonIgnore
+    @ManyToMany(mappedBy = "artistas", fetch = FetchType.LAZY)
+    private List<Evento> eventos = new ArrayList<>();
+
+    // Construtores
+    public Artista() {}
+
+    public Artista(String nomeArtistico, String generoMusical) {
+        this.nomeArtistico = nomeArtistico;
+        this.generoMusical = generoMusical;
+    }
 
     // Getters e Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
-    public String getEstiloMusical() { return estiloMusical; }
-    public void setEstiloMusical(String estiloMusical) { this.estiloMusical = estiloMusical; }
-    public List<Evento> getEventos() { return eventos; }
-    public void setEventos(List<Evento> eventos) { this.eventos = eventos; }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNomeArtistico() {
+        return nomeArtistico;
+    }
+
+    public void setNomeArtistico(String nomeArtistico) {
+        this.nomeArtistico = nomeArtistico;
+    }
+
+    public String getGeneroMusical() {
+        return generoMusical;
+    }
+
+    public void setGeneroMusical(String generoMusical) {
+        this.generoMusical = generoMusical;
+    }
+
+    public List<Evento> getEventos() {
+        return eventos;
+    }
+
+    public void setEventos(List<Evento> eventos) {
+        this.eventos = eventos;
+    }
 }

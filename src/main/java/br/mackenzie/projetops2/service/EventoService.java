@@ -1,44 +1,53 @@
 package br.mackenzie.projetops2.service;
 
+import br.mackenzie.projetops2.model.Evento;
 import br.mackenzie.projetops2.model.LogPrevisao;
+import br.mackenzie.projetops2.dto.WeatherResponseDTO;
 import br.mackenzie.projetops2.repository.EventoRepository;
-import org.springframework.beans.factory.annotation.Value;
+import br.mackenzie.projetops2.repository.LogPrevisaoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class EventoService {
 
-    private final EventoRepository eventoRepository;
-    private final RestTemplate restTemplate;
+    @Autowired
+    private EventoRepository eventoRepository;
 
-    @Value("${openweathermap.api.key:sua_chave_aqui}")
-    private String apiKey;
+    @Autowired
+    private LogPrevisaoRepository logPrevisaoRepository;
 
-    public EventoService(EventoRepository eventoRepository) {
-        this.eventoRepository = eventoRepository;
-        this.restTemplate = new RestTemplate();
+    @Autowired
+    private OpenWeatherService openWeatherService;
+
+    // Método solicitado pelo EventoApiController (Linha 20)
+    public Evento salvarEvento(Evento evento) {
+        // Persiste as entidades locais vinculadas em cascata
+        Evento eventoSalvo = eventoRepository.save(evento);
+
+        // Dispara o consumo da API externa
+        String cidade = eventoSalvo.getLocalizacao().getCity();
+        WeatherResponseDTO dadosClima = openWeatherService.buscarClimaPorCidade(cidade);
+
+        // Armazenamento em banco local para consulta offline (Conforme requisito do enunciado)
+        if (dadosClima != null) {
+            LogPrevisao log = new LogPrevisao();
+            log.setTemperatura(dadosClima.getMain().getTemp());
+            log.setCondicaoClimatica(dadosClima.getWeather().get(0).getDescription());
+            log.setUmidade(dadosClima.getMain().getHumidity());
+            log.setDataConsulta(LocalDateTime.now());
+            log.setEvento(eventoSalvo);
+
+            logPrevisaoRepository.save(log);
+        }
+
+        return eventoSalvo;
     }
 
-    public LogPrevisao consultarClima(String cidade) {
-        String url = "https://api.openweathermap.org/data/2.5/weather?q=" + cidade + "&appid=" + apiKey + "&units=metric&lang=pt_br";
-        
-        var log = new LogPrevisao();
-        log.setDataConsulta(LocalDateTime.now());
-
-        try {
-            OpenWeatherResponse response = restTemplate.getForObject(url, OpenWeatherResponse.class);
-            if (response != null) {
-                log.setTemperatura(response.getTemp());
-                log.setUmidade(response.getHumidity());
-                log.setDescricaoClima(response.getDescription());
-            }
-        } catch (Exception e) {
-            log.setTemperatura(22.0); 
-            log.setDescricaoClima("Indisponivel (Offline)");
-            log.setUmidade(50);
-        }
-        return log;
+    // Método solicitado pelo EventoApiController (Linha 27) e EventoWebController (Linha 20)
+    public List<Evento> listarTodos() {
+        return eventoRepository.findAll();
     }
 }
