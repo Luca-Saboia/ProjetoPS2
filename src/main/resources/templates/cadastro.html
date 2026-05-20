@@ -163,7 +163,7 @@
 
                 <div class="form-group">
                     <label for="dataHora">Data e Hora do Show</label>
-                    <input type="datetime-local" id="dataHora" th:field="*{dataHora}" required />
+                    <input type="text" id="dataHora" th:field="*{dataHora}" placeholder="Ex: 20/05/2026 20:30" required />
                 </div>
 
                 <div class="form-group row-group">
@@ -187,5 +187,44 @@
         </div>
     </main>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const inputDataHora = document.getElementById("dataHora");
+            const form = document.querySelector("form");
+            
+            form.addEventListener("submit", function(event) {
+                const valorDigitado = inputDataHora.value.trim();
+                
+                // Regex para aceitar o formato "dd/mm/yyyy hh:mm" ou com traço "hh-mm"
+                const regex = /^(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2})[:-](\d{2})$/;
+                const partes = valorDigitado.match(regex);
+                
+                if (!partes) {
+                    event.preventDefault(); // Impede o envio
+                    alert("Formato de data inválido! Por favor, use DD/MM/AAAA HH:MM (ex: 20/05/2026 20:30).");
+                    inputDataHora.focus();
+                    return; // Para a execução do script aqui
+                }
+                
+                // Extrai os pedaços do texto e converte para números inteiros
+                const dia = parseInt(partes[1], 10);
+                const mes = parseInt(partes[2], 10) - 1; // No JavaScript, os meses vão de 0 (Janeiro) a 11 (Dezembro)
+                const ano = parseInt(partes[3], 10);
+                const hora = parseInt(partes[4], 10);
+                const minuto = parseInt(partes[5], 10);
+                
+                // Monta a data no formato nativo que o JavaScript compreende
+                const dataEscolhida = new Date(ano, mes, dia, hora, minuto);
+                const dataAtual = new Date();
+                
+                // Faz a comparação matemática para impedir cadastro no passado
+                if (dataEscolhida < dataAtual) {
+                    event.preventDefault(); // Impede o envio para o Spring Boot
+                    alert("Ops! Você não pode cadastrar um evento em uma data ou hora que já passou."); 
+                    inputDataHora.focus();
+                }
+            });
+        });
+    </script>
 </body>
 </html>

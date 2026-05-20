@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
 @Table(name = "eventos")
 public class Evento {
@@ -17,6 +19,7 @@ public class Evento {
     private String nome;
 
     @Column(nullable = false)
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime dataHora;
 
     @ManyToOne(cascade = CascadeType.ALL)
