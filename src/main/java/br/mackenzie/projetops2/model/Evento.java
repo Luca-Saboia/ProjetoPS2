@@ -23,7 +23,7 @@ public class Evento {
     @JoinColumn(name = "localizacao_id")
     private Localizacao localizacao;
 
-    // Relacionamento ManyToMany mapeado em português para alinhar com o banco e o HTML
+    
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(
         name = "evento_artista",

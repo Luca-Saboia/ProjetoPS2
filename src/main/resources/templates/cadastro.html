@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulário de Evento</title>
+    <style>
+        /* Layout Base com a Sidebar Incorporada */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        /* Sidebar Fixa */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            background-color: #0f172a;
+            color: #ffffff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 30px 20px;
+            box-sizing: border-box;
+        }
+
+        .sidebar h2 {
+            font-size: 20px;
+            margin-bottom: 35px;
+            color: #38bdf8;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            color: #94a3b8;
+            text-decoration: none;
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .sidebar nav a:hover {
+            background-color: #1e293b;
+            color: #ffffff;
+        }
+        
+        .sidebar nav a.active {
+            background-color: #38bdf8;
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        /* Área do Conteúdo Principal (Direita) */
+        .main-content {
+            margin-left: 260px;
+            flex-grow: 1;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .form-container {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 35px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .form-container h1 {
+            color: #1e293b;
+            font-size: 24px;
+            margin-top: 0;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #475569;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 15px;
+            color: #334155;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+        }
+
+        .row-group {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 15px;
+        }
+
+        .btn-submit {
+            background-color: #0f172a;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: #1e293b;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <h2>Ações de Gestão</h2>
+        <nav>
+            <a th:href="@{/web/eventos}">📋 Listar Eventos</a>
+            <a th:href="@{/web/eventos/novo}" class="active">➕ Cadastrar Show</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <div class="form-container">
+            
+            <h1 th:text="${evento.id != null} ? '✏️ Editar Evento' : '➕ Novo Evento'">Novo Evento</h1>
+            
+            <form th:action="@{/web/eventos/salvar}" th:object="${evento}" method="POST">
+                
+                <input type="hidden" th:field="*{id}" />
+
+                <div class="form-group">
+                    <label for="nome">Nome do Evento</label>
+                    <input type="text" id="nome" th:field="*{nome}" placeholder="Ex: Show Mackenzie PS2" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="dataHora">Data e Hora do Show</label>
+                    <input type="datetime-local" id="dataHora" th:field="*{dataHora}" required />
+                </div>
+
+                <div class="form-group row-group">
+                    <div>
+                        <label for="city">Cidade</label>
+                        <input type="text" id="city" name="localizacao.city" 
+                               th:value="${evento.localizacao != null} ? ${evento.localizacao.city} : ''" 
+                               placeholder="Ex: Sao Paulo" required />
+                    </div>
+                    <div>
+                        <label for="estado">Estado</label>
+                        <input type="text" id="estado" name="localizacao.estado" 
+                               th:value="${evento.localizacao != null} ? ${evento.localizacao.estado} : ''" 
+                               placeholder="Ex: SP" required />
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit" 
+                        th:text="${evento.id != null} ? 'Atualizar Dados' : 'Gravar no Banco H2'">Gravar no Banco H2</button>
+            </form>
+        </div>
+    </main>
+
+</body>
+</html>

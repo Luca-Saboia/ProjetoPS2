@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LocalizacaoRepository extends JpaRepository<Localizacao, Long> {
-    // O JpaRepository já fornece automaticamente os métodos do CRUD para Localizacao
+    
 }

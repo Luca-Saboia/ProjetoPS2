@@ -5,41 +5,82 @@
     <title>Catálogo de Eventos</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
-        /* Estilos embutidos de segurança caso o arquivo CSS demore a carregar no Codespaces */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f4f8;
             margin: 0;
-            padding: 40px 20px;
+            padding: 0;
             display: flex;
-            justify-content: center;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0f4f8;
         }
+
+        /* Sidebar Fixa */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            background-color: #0f172a;
+            color: #ffffff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 30px 20px;
+            box-sizing: border-box;
+        }
+
+        .sidebar h2 {
+            font-size: 20px;
+            margin-bottom: 35px;
+            color: #38bdf8;
+        }
+
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            color: #94a3b8;
+            text-decoration: none;
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .sidebar nav a:hover, .sidebar nav a.active {
+            background-color: #1e293b;
+            color: #ffffff;
+        }
+
+        /* Conteúdo Principal */
+        .main-content {
+            margin-left: 260px;
+            flex-grow: 1;
+            padding: 40px;
+        }
+
         .container {
             background: #ffffff;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             padding: 30px;
             width: 100%;
-            max-width: 1100px;
         }
+
         .header h1 {
             color: #1e293b;
             margin: 0 0 5px 0;
             font-size: 28px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
+
         .header p {
             color: #64748b;
             margin: 0 0 25px 0;
             font-size: 15px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
         }
+
         th {
             background-color: #0f172a;
             color: #ffffff;
@@ -47,89 +88,76 @@
             padding: 14px 16px;
             font-size: 13px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
+
         td {
             padding: 16px;
             border-bottom: 1px solid #e2e8f0;
             color: #334155;
             font-size: 15px;
         }
-        tr:last-child td {
-            border-bottom: none;
-        }
-        .weather-badge {
-            background-color: #e0f2fe;
-            color: #0369a1;
-            padding: 4px 8px;
+
+        .btn-action {
+            text-decoration: none;
+            padding: 6px 12px;
             border-radius: 6px;
+            font-size: 13px;
             font-weight: 600;
-            font-size: 14px;
-            display: inline-block;
+            margin-right: 5px;
         }
-        .artist-badge {
-            background-color: #f1f5f9;
-            color: #475569;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .text-muted {
-            color: #94a3b8;
-            font-style: italic;
-            font-size: 14px;
-        }
+
+        .btn-edit { background-color: #e0f2fe; color: #0369a1; }
+        .btn-delete { background-color: #fee2e2; color: #b91c1c; }
+        .weather-badge { background-color: #f0fdf4; color: #166534; padding: 4px 8px; border-radius: 6px; font-weight: 600; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header">
-            <h1>🗓️ Catálogo de Eventos</h1>
-            <p>Planeamento inteligente integrado com a previsão do tempo</p>
-        </div>
+    <aside class="sidebar">
+        <h2>🗓️ Gestão de Eventos</h2>
+        <nav>
+            <a th:href="@{/web/eventos}" class="active">📋 Listar Eventos</a>
+            <a th:href="@{/web/eventos/novo}">➕ Cadastrar Show</a>
+        </nav>
+    </aside>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Evento</th>
-                    <th>Artista Principal</th>
-                    <th>Data e Hora</th>
-                    <th>Localização</th>
-                    <th>Previsão do Clima</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="evento : ${eventos}">
-                    
-                    <td th:text="${evento.nome}">Nome do Show</td>
-                    
-                    <td>
-                        <span class="artist-badge" 
-                              th:each="artista : ${evento.artistas}" 
-                              th:text="${artista.nomeArtistico}">
-                              Artista
-                        </span>
-                        <span th:if="${#lists.isEmpty(evento.artistas)}" class="text-muted">Sem artista</span>
-                    </td>
-                    
-                    <td th:text="${#temporals.format(evento.dataHora, 'dd/MM/yyyy HH:mm')}">20/11/2026 21:00</td>
-                    
-                    <td th:text="${evento.localizacao.city} + ' - ' + ${evento.localizacao.estado}">São Paulo - SP</td>
-                    
-                    <td>
-                        <div th:each="log : ${evento.logsPrevisao}">
-                            <span class="weather-badge" th:text="${log.temperatura} + '°C'">20°C</span>
-                            <small class="text-muted" th:text="'(' + ${log.condicaoClimatica} + ')'">(Ensolarado)</small>
-                        </div>
-                        <span th:if="${#lists.isEmpty(evento.logsPrevisao)}" class="text-muted">Sem dados</span>
-                    </td>
-                    
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <main class="main-content">
+        <div class="container">
+            <div class="header">
+                <h1>Catálogo de Eventos</h1>
+                <p>Painel administrativo integrado com previsão do tempo real</p>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Evento</th>
+                        <th>Data e Hora</th>
+                        <th>Localização</th>
+                        <th>Previsão do Clima</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="evento : ${eventos}">
+                        <td th:text="${evento.nome}" style="font-weight: 600;">Nome</td>
+                        <td th:text="${#temporals.format(evento.dataHora, 'dd/MM/yyyy HH:mm')}">Data</td>
+                        <td th:text="${evento.localizacao.city} + ' - ' + ${evento.localizacao.estado}">Local</td>
+                        <td>
+                            <div th:each="log : ${evento.logsPrevisao}">
+                                <span class="weather-badge" th:text="${log.temperatura} + '°C'">19°C</span>
+                                <small th:text="'(' + ${log.condicaoClimatica} + ')'" style="color: #64748b;"></small>
+                            </div>
+                        </td>
+                        <td>
+                            <a th:href="@{/web/eventos/editar/{id}(id=${evento.id})}" class="btn-action btn-edit">✏️ Editar</a>
+                            <a th:href="@{/web/eventos/deletar/{id}(id=${evento.id})}" class="btn-action btn-delete" onclick="return confirm('Deseja realmente excluir este evento?');">🗑️ Remover</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
 
 </body>
 </html>

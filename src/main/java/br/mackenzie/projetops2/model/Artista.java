@@ -19,7 +19,7 @@ public class Artista {
     @Column(nullable = false)
     private String generoMusical;
 
-    // @JsonIgnore crucial aqui para evitar o loop infinito de JSON que vimos antes!
+    //evitar o loop infinito de JSON 
     @JsonIgnore
     @ManyToMany(mappedBy = "artistas", fetch = FetchType.LAZY)
     private List<Evento> eventos = new ArrayList<>();
@@ -32,7 +32,7 @@ public class Artista {
         this.generoMusical = generoMusical;
     }
 
-    // Getters e Setters
+    
     public Long getId() {
         return id;
     }

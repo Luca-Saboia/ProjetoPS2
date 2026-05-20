@@ -17,8 +17,8 @@ public class EventoApiController {
 
     @PostMapping
     public ResponseEntity<Evento> criarEvento(@RequestBody Evento evento) {
-        Evento novoEvento = eventoService.salvarEvento(evento);
-        // Retorno correto com o código HTTP 201 (Created) exigido pelo enunciado
+        Evento novoEvento = eventoService.salvar(evento);
+        // Retorno correto com o código HTTP 201 (Created)
         return new ResponseEntity<>(novoEvento, HttpStatus.CREATED);
     }
 
