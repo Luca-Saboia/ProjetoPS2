@@ -82,4 +82,5 @@ public class EventoService {
     public void deletarPorId(Long id) {
         eventoRepository.deleteById(id);
     }
+
 }
