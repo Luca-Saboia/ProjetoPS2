@@ -1,3 +1,7 @@
+//Andre Cintra Kanni - 10738062
+//Luca Saboia - 10736834
+//Anthony Veloso - 10737481
+
 package br.mackenzie.projetops2;
 
 import org.springframework.boot.SpringApplication;
