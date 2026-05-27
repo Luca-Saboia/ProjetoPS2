@@ -110,7 +110,7 @@
         .btn-delete { background-color: #fee2e2; color: #b91c1c; }
         .weather-badge { background-color: #f0fdf4; color: #166534; padding: 4px 8px; border-radius: 6px; font-weight: 600; }
 
-        /*CSS EVENTOS VAZIO*/
+        /*lista vazia*/
         .empty-state {
             text-align: center;
             padding: 40px 20px;
@@ -164,36 +164,7 @@
                 <p>Painel administrativo integrado com previsão do tempo real</p>
             </div>
 
-            <!-- <table>
-                <thead>
-                    <tr>
-                        <th>Evento</th>
-                        <th>Data e Hora</th>
-                        <th>Localização</th>
-                        <th>Previsão do Clima</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="evento : ${eventos}">
-                        <td th:text="${evento.nome}" style="font-weight: 600;">Nome</td>
-                        <td th:text="${#temporals.format(evento.dataHora, 'dd/MM/yyyy HH:mm')}">Data</td>
-                        <td th:text="${evento.localizacao.city} + ' - ' + ${evento.localizacao.estado}">Local</td>
-                        <td>
-                            <div th:each="log : ${evento.logsPrevisao}">
-                                <span class="weather-badge" th:text="${log.temperatura} + '°C'">19°C</span>
-                                <small th:text="'(' + ${log.condicaoClimatica} + ')'" style="color: #64748b;"></small>
-                            </div>
-                        </td>
-                        <td>
-                            <a th:href="@{/web/eventos/editar/{id}(id=${evento.id})}" class="btn-action btn-edit">✏️ Editar</a>
-                            <a th:href="@{/web/eventos/deletar/{id}(id=${evento.id})}" class="btn-action btn-delete" onclick="return confirm('Deseja realmente excluir este evento?');">🗑️ Remover</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table> -->
-
-            <!--CODIGO NOVO-->
+           
             <table th:if="${not #lists.isEmpty(eventos)}">
                 <thead>
                     <tr>
