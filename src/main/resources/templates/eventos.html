@@ -109,6 +109,42 @@
         .btn-edit { background-color: #e0f2fe; color: #0369a1; }
         .btn-delete { background-color: #fee2e2; color: #b91c1c; }
         .weather-badge { background-color: #f0fdf4; color: #166534; padding: 4px 8px; border-radius: 6px; font-weight: 600; }
+
+        /*CSS EVENTOS VAZIO*/
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .empty-state h2 {
+            color: #1e293b;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #475569;
+            margin-bottom: 25px;
+            font-size: 15px;
+        }
+
+        .btn-submit {
+            background-color: #0f172a;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: #1e293b;
+        }
     </style>
 </head>
 <body>
@@ -128,7 +164,37 @@
                 <p>Painel administrativo integrado com previsão do tempo real</p>
             </div>
 
-            <table>
+            <!-- <table>
+                <thead>
+                    <tr>
+                        <th>Evento</th>
+                        <th>Data e Hora</th>
+                        <th>Localização</th>
+                        <th>Previsão do Clima</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="evento : ${eventos}">
+                        <td th:text="${evento.nome}" style="font-weight: 600;">Nome</td>
+                        <td th:text="${#temporals.format(evento.dataHora, 'dd/MM/yyyy HH:mm')}">Data</td>
+                        <td th:text="${evento.localizacao.city} + ' - ' + ${evento.localizacao.estado}">Local</td>
+                        <td>
+                            <div th:each="log : ${evento.logsPrevisao}">
+                                <span class="weather-badge" th:text="${log.temperatura} + '°C'">19°C</span>
+                                <small th:text="'(' + ${log.condicaoClimatica} + ')'" style="color: #64748b;"></small>
+                            </div>
+                        </td>
+                        <td>
+                            <a th:href="@{/web/eventos/editar/{id}(id=${evento.id})}" class="btn-action btn-edit">✏️ Editar</a>
+                            <a th:href="@{/web/eventos/deletar/{id}(id=${evento.id})}" class="btn-action btn-delete" onclick="return confirm('Deseja realmente excluir este evento?');">🗑️ Remover</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table> -->
+
+            <!--CODIGO NOVO-->
+            <table th:if="${not #lists.isEmpty(eventos)}">
                 <thead>
                     <tr>
                         <th>Evento</th>
@@ -156,6 +222,14 @@
                     </tr>
                 </tbody>
             </table>
+
+            <div th:if="${#lists.isEmpty(eventos)}" class="empty-state">
+                <h2>📭 Nenhum evento cadastrado até o momento!</h2>
+                <p>O banco de dados H2 está limpo. Deseja populá-lo?</p>
+                <a th:href="@{/web/eventos/novo}" class="btn-submit">
+                    ➕ Cadastrar o Primeiro Evento
+                </a>
+            </div>
         </div>
     </main>
 
