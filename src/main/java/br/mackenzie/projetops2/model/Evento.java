@@ -19,7 +19,7 @@ public class Evento {
     private String nome;
 
     @Column(nullable = false)
-    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
+    //@DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime dataHora;
 
     @ManyToOne(cascade = CascadeType.ALL)
